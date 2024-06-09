@@ -1,4 +1,5 @@
 from Team import Team
+from Constant import Constant
 
 
 class Player:
@@ -7,5 +8,5 @@ class Player:
         self.team = Team(player[0])
         self.id = player[1]
         self.x = player[2]
-        self.y = player[3]
+        self.y = self.y = Constant.Y_MAX - player[3]
         self.color = self.team.color

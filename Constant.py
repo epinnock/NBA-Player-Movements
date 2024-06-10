@@ -14,3 +14,4 @@ class Constant:
     X_CENTER = X_MAX / 2 - DIFF / 1.5 + 0.10
     Y_CENTER = Y_MAX - DIFF / 1.5 - 0.35
     MESSAGE = 'You can rerun the script and choose any event from 0 to '
+    EVENT_SET = 'Event has been set to event # '

@@ -19,19 +19,18 @@ class Game:
         self.data_frame = pd.read_json(self.path_to_json)
         last_default_index = len(self.data_frame) - 1
         self.set_event(last_default_index)
+        
+
 
     
     def set_event(self,event_id):
-
       self.event_index = event_id
       index = self.event_index
-
-      print(Constant.MESSAGE + str(last_default_index))
       event = self.data_frame['events'][index]
       self.event = Event(event)
       self.home_team = Team(event['home']['teamid'])
       self.guest_team = Team(event['visitor']['teamid'])
-
+    print(Constant.MESSAGE + str(last_default_index))
 
     def start(self):
         self.event.show()

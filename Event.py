@@ -142,11 +142,6 @@ class Event:
             
             return path
 
-        # Check if the file already exists
-        if file_exists(path):
-            print(f'File {path} already exists.')
-            return path
-
         # Run the plotting function and handle memory cleanup
         try:
             result_path = plot_moment(moment, path)

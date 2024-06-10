@@ -4,6 +4,7 @@ from Team import Team
 import matplotlib.pyplot as plt
 from matplotlib import animation
 from matplotlib.patches import Circle, Rectangle, Arc
+import gc
 
 
 class Event:

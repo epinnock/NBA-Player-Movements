@@ -17,12 +17,13 @@ class Game:
 
     def read_json(self):
         self.data_frame = pd.read_json(self.path_to_json)
-        self.set_event()
+        last_default_index = len(self.data_frame) - 1
+        self.set_event(last_default_index)
 
     
-    def set_event(self):
-      last_default_index = len(self.data_frame) - 1
-      self.event_index = min(self.event_index, last_default_index)
+    def set_event(self,event_id):
+
+      self.event_index = event_id
       index = self.event_index
 
       print(Constant.MESSAGE + str(last_default_index))

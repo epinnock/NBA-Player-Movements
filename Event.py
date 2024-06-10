@@ -104,37 +104,55 @@ class Event:
 
 
     def renderMoment(self, moment, path):
-        fig, ax = plt.subplots()
-        ax.set_xlim(Constant.X_MIN, Constant.X_MAX)
-        ax.set_ylim(Constant.Y_MIN, Constant.Y_MAX)
-        ax.axis('off')
+        def plot_moment(moment, path):
+            fig, ax = plt.subplots()
+            ax.set_xlim(Constant.X_MIN, Constant.X_MAX)
+            ax.set_ylim(Constant.Y_MIN, Constant.Y_MAX)
+            ax.axis('off')
+            
+            # Draw the court
+            court = plt.imread("/content/NBA-Player-Movements/court.png")
+            ax.imshow(court, zorder=0, extent=[Constant.X_MIN, Constant.X_MAX - Constant.DIFF, Constant.Y_MAX, Constant.Y_MIN])
+            
+            # Convert Moment
+            moment = Moment(moment)
         
-        # Draw the court
-        court = plt.imread("/content/NBA-Player-Movements/court.png")
-        ax.imshow(court, zorder=0, extent=[Constant.X_MIN, Constant.X_MAX - Constant.DIFF, Constant.Y_MAX, Constant.Y_MIN])
+            # Draw players
+            for player in moment.players:
+                circle = Circle((player.x, player.y), Constant.PLAYER_CIRCLE_SIZE, color=player.color)
+                ax.add_patch(circle)
+                ax.annotate(self.player_ids_dict[player.id][1], (player.x, player.y), color='w', weight='bold', 
+                            fontsize=8, ha='center', va='center')
+            
+            # Draw the ball
+            ball = Circle((moment.ball.x, moment.ball.y), moment.ball.radius / Constant.NORMALIZATION_COEF, color=moment.ball.color)
+            ax.add_patch(ball)
+            
+            # Add clock and quarter info
+            clock_info = 'Quarter {:d}\n {:02d}:{:02d}\n {:03.1f}'.format(
+                        moment.quarter,
+                        int(moment.game_clock) % 3600 // 60,
+                        int(moment.game_clock) % 60,
+                        moment.shot_clock)
+            ax.text(Constant.X_CENTER, Constant.Y_CENTER, clock_info, color='black', ha='center', va='center')
         
-        # Draw players
-        for player in moment.players:
-            circle = Circle((player.x, player.y), Constant.PLAYER_CIRCLE_SIZE, color=player.color)
-            ax.add_patch(circle)
-            ax.annotate(self.player_ids_dict[player.id][1], (player.x, player.y), color='w', weight='bold', 
-                        fontsize=8, ha='center', va='center')
-        
-        # Draw the ball
-        ball = Circle((moment.ball.x, moment.ball.y), moment.ball.radius / Constant.NORMALIZATION_COEF, color=moment.ball.color)
-        ax.add_patch(ball)
-        
-        # Add clock and quarter info
-        clock_info = 'Quarter {:d}\n {:02d}:{:02d}\n {:03.1f}'.format(
-                    moment.quarter,
-                    int(moment.game_clock) % 3600 // 60,
-                    int(moment.game_clock) % 60,
-                    moment.shot_clock)
-        ax.text(Constant.X_CENTER, Constant.Y_CENTER, clock_info, color='black', ha='center', va='center')
+            # Save the plot to the provided path
+            plt.savefig(path, bbox_inches='tight')
+            plt.close(fig)
+            
+            return path
 
-        # Save the plot to an image file
-        plt.savefig(path, bbox_inches='tight')
-        plt.close(fig)
-        
-        return path
+        # Check if the file already exists
+        if file_exists(path):
+            print(f'File {path} already exists.')
+            return path
+
+        # Run the plotting function and handle memory cleanup
+        try:
+            result_path = plot_moment(moment, path)
+        finally:
+            plt.close('all')
+            gc.collect()
+
+        return result_path
 

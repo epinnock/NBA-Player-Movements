@@ -30,7 +30,7 @@ class Game:
       self.event = Event(event)
       self.home_team = Team(event['home']['teamid'])
       self.guest_team = Team(event['visitor']['teamid'])
-    print(Constant.MESSAGE + str(last_default_index))
+      print(Constant.MESSAGE + str(last_default_index))
 
     def start(self):
         self.event.show()

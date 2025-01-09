@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 from matplotlib import animation
 from matplotlib.patches import Circle, Rectangle, Arc
 import gc
+from concurrent.futures import ThreadPoolExecutor, as_completed
 
 
 class Event:
@@ -98,21 +99,23 @@ class Event:
                          fig, self.update_radius,
                          fargs=(player_circles, ball_circle, annotations, clock_info),
                          frames=len(self.moments), interval=Constant.INTERVAL)
-        court = plt.imread("court.png")
+        court = plt.imread("/home/boxuser/workspace/nbadataset/NBA-Player-Movements/court.png")
         plt.imshow(court, zorder=0, extent=[Constant.X_MIN, Constant.X_MAX - Constant.DIFF,
                                             Constant.Y_MAX, Constant.Y_MIN])
         plt.show()
 
 
     def renderMoment(self, moment, path):
+        folder_path = '/home/boxuser/workspace/nbadataset/frames/'
         def plot_moment(moment, path):
             fig, ax = plt.subplots()
             ax.set_xlim(Constant.X_MIN, Constant.X_MAX)
             ax.set_ylim(Constant.Y_MIN, Constant.Y_MAX)
             ax.axis('off')
             
+
             # Draw the court
-            court = plt.imread("/content/NBA-Player-Movements/court.png")
+            court = plt.imread("/home/boxuser/workspace/nbadataset/NBA-Player-Movements/court.png")
             ax.imshow(court, zorder=0, extent=[Constant.X_MIN, Constant.X_MAX - Constant.DIFF, Constant.Y_MAX, Constant.Y_MIN])
             
             # Convert Moment
@@ -145,10 +148,9 @@ class Event:
 
         # Run the plotting function and handle memory cleanup
         try:
-            result_path = plot_moment(moment, path)
+            result_path = plot_moment(moment,folder_path+path)
         finally:
             plt.close('all')
-            gc.collect()
 
         return result_path
 
